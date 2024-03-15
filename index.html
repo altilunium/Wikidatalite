@@ -6,6 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wikidatalite</title>
   <style>
+
+@font-face {
+    font-family: 'Noto';
+    font-style: normal;
+    font-weight: normal;
+    src: url('noto.woff2') format('woff');
+}
+
+
+
     body{
       font-family: Arial;
     }
@@ -14,7 +24,8 @@
     }
     .i {
           font-size: 14px;
-    padding: 8px 54px;
+    margin-left:16px;
+    margin-top:15px;
     }
     .i h1 {
       font-family: Arial;
@@ -45,14 +56,32 @@
   color:blue;
 }
 
-#searchForm{
-      margin-left: 53px;
-    padding: 10px 5px;
-}
 
 #searchInput{
-  padding: 7px 23px;
+padding: 9px;
     font-size: 16px;
+    width: 90%;
+    border: 0px;
+    overflow: hidden;
+    resize: none;
+    font-family: 'Noto';
+    color: #1A1A1B;
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    /* padding-bottom: 15px; */
+    margin-top: 47px;
+    /* max-width: 750px; */
+    margin: 0px auto 0px auto;
+    border: 1px solid #cacaca;
+    display: flex;
+    align-items: center;
+    margin-top: 18px;
+}
+
+
+.wikibase-sitelinklistview ul{
+  list-style-type: disclosure-closed;
 }
 
 button{
@@ -249,8 +278,19 @@ a {
 }
 
 #resultContainer{
-  position: absolute;
-    left: 0px;
+  width: 95%;
+      border: 0px;
+      overflow: hidden;
+      resize: none;
+      font-family: 'Noto';
+      color: #1A1A1B;
+      font-size: 14px;
+      line-height: 21px;
+      font-weight: 400;
+      padding-bottom: 15px;
+      margin-top: 47px;
+      max-width: 750px;
+      margin: 25px auto 0px auto;
 }
 
 .wikibase-entityview-side h2{
@@ -270,8 +310,8 @@ a {
   </div>
   
   <form id="searchForm">
-    <input type="text" id="searchInput" name="searchInput">
-    <button type="submit">Search</button>
+    <input type="text" id="searchInput" name="searchInput" placeholder="Search">
+    <button type="submit" style="display:none">Search</button>
   </form>
 
   <div id="resultContainer"></div>
@@ -300,6 +340,7 @@ console.log(searchValue)
 
 
 function renderItemDetail(itemValue){
+  console.log("RENDER ITEM DETAIL!",itemValue)
 
   var uri = "https://www.wikidata.org/w/api.php?action=parse&formatversion=2&page="+itemValue+"&prop=text&format=json&origin=*"
       var xhr = new XMLHttpRequest();
@@ -310,12 +351,14 @@ function renderItemDetail(itemValue){
           var jsonResponse = JSON.parse(xhr.response);
           console.log(jsonResponse["parse"]["text"])
 
+        /*
         var ab = document.getElementById(itemValue)
         const newElement = document.createElement('div');
         newElement.id = 'details';
         newElement.innerHTML = "Loading..."
-
         ab.appendChild(newElement)
+        */
+
         var tt = document.getElementById("details")
         tt.innerHTML = jsonResponse["parse"]["text"]
 
@@ -333,7 +376,7 @@ function renderItemDetail(itemValue){
 
           var nya = document.getElementsByClassName("titl")
           document.title = nya[0].innerHTML
-          ab.onclick = ""
+         
 
 
           // Perform any other desired operations with the link
@@ -462,7 +505,27 @@ function searchNoninput2(searchInput){
       xhr.onload = function() {
         if (xhr.status === 200) {
           var jsonResponse = xhr.response;
-          renderResult(jsonResponse);
+          var resultContainer = document.getElementById('resultContainer');
+          //resultContainer.innerHTML = JSON.stringify(jsonResponse, null, 2);
+          var zaString =""
+
+
+          var rr = jsonResponse["search"]
+          for (let i = 0; i < rr.length; i++) {
+            zaString = zaString + "<div class='i'  id='"+rr[i]['title'] +"''>"
+            zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
+            try {
+                  zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
+            } catch (error) {
+
+            }
+            zaString = zaString + "<div id='details'>Now loading...</div></div>"
+
+
+          }
+          resultContainer.innerHTML = zaString
+          renderItemDetail(searchInput)
+
           hideLoadingOverlay();
         } else {
           console.log('Error: ' + xhr.status);
@@ -473,7 +536,7 @@ function searchNoninput2(searchInput){
       // Send the request
       xhr.send();
 
-      renderItemDetail(searchInput)
+      
 }
 
 
