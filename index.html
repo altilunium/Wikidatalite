@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="https://www.wikidata.org/static/favicon/wikidata.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wikidatalite</title>
+  <style>
+    body{
+      font-family: Arial;
+    }
+    #result-container{
+      margin-top:20px;
+    }
+    .i {
+          font-size: 14px;
+    padding: 8px 54px;
+    }
+    .i h1 {
+      font-family: Arial;
+    font-size: 19px;
+    font-weight: 500;
+    margin: 0px;
+        padding-bottom: 2px;
+    }
+    .num {
+      font-size:13px;
+      color:grey;
+    }
+    .desc{
+      margin-left: 28px;
+    }
+    #details {
+      padding-left: 30px;
+    margin-top: 16px;
+    line-height: 19px;
+}
+
+  .prop{
+    padding-right:30px;
+  }
+
+
+.ilink{
+  color:blue;
+}
+
+#searchForm{
+      margin-left: 53px;
+    padding: 10px 5px;
+}
+
+#searchInput{
+  padding: 7px 23px;
+    font-size: 16px;
+}
+
+button{
+  padding: 9px 15px;
+      margin-left: 9px;
+}
+
+
+
+/**
+ * This is some minimal proof-of-concept CSS which attempts to make the Wikidata
+ * desktop interface work better on narrower screens.
+ *
+ * See [[User:Nikki/NarrowUI]] for a more polished version.
+ *
+ * This can be used with any skin but on mobile, it works best with the Minerva,
+ * Timeless or Monobook skins because they have a mobile-friendly mode.
+ *
+ * To use it, add the following line to the top of your common.css:
+ * @import url("//www.wikidata.org/w/index.php?title=User:Nikki/narrow.css&action=raw&ctype=text/css");
+ *
+ * @license CC0-1.0
+ */
+
+/*** Display property labels above the list of statements ***/
+
+.wikibase-statementgrouplistview .wikibase-statementgroupview-property .wikibase-statementgroupview-property-label {
+  /* remove float so that things stack vertically */
+  float: none; /* was: left (ltr), right (rtl) */
+}
+
+.wikibase-statementgrouplistview .wikibase-statementgroupview:not(.wb-new) .wikibase-statementgroupview-property {
+  /* make the property label use the full width now that the property label is above the statements */
+  width: 100%; /* was: 15em */
+
+  /* absolute positioning = chaos */
+  position: static; /* was: absolute */
+}
+
+.wikibase-statementgroupview .wikibase-statementgroupview-property {
+  /* fix the borders: the one between the property and statements should be 0 */
+  /* the property was to the left (or right), so it was the right (or left) border */
+  /* but the property is now above, so it's now the bottom border */
+
+  border-bottom: 0;
+}
+
+.wikibase-statementgrouplistview .wikibase-statementgroupview:not(.wb-new) .wikibase-statementlistview {
+  /* fix border (see above) */
+
+
+  /* make statements use the full width now that the property label is above the statements */
+  margin-inline-start: auto; /* was: margin-left: 15em (ltr), margin-right: 15em (rtl) */
+  width: 100%; /* was: calc(100% - 15em - 2px) */
+}
+
+.wikibase-statementgrouplistview .wikibase-statementgroupview-property .wikibase-statementgroupview-property-label {
+  /* distribute the padding above and below the property label evenly so that it is positioned in the middle of the line */
+    padding-block: 5px; /* was: padding: 10px; padding-bottom: 0; */
+}
+
+/*** Make sitelinks section sizing more dynamic ***/
+
+.wikibase-sitelinklistview .wikibase-sitelinkview.wb-edit .wikibase-sitelinkview-siteid-container,
+.wikibase-sitelinklistview .wikibase-sitelinkview.wb-edit .wikibase-sitelinkview-link {
+  /* display the site ID and page name on separate lines when editing */
+  display: block; /* was: inline-block, inline */
+}
+
+.wikibase-sitelinkview .wikibase-sitelinkview-page input {
+  /* the width gets set dynamically and it doesn't work well, force override it */
+  width: auto !important;
+}
+
+/*** Main statement toolbar ***/
+
+.wikibase-entityview .wikibase-statementview .wikibase-toolbar-container {
+  /* remove absolute positioning for the main edit toolbar */
+  position: static; /* was: absolute */
+}
+
+div.wikibase-statementview-mainsnak {
+  /* remove space that was reserved for the edit toolbar */
+  margin-right: 0; /* was: 18em */
+}
+
+/*** Gridify qualifiers and references ***/
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview {
+  /* display qualifiers and references as a grid: */
+  /* | property | value ... ... | edit buttons | */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+}
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview-value-container,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview-value-container {
+  /* uncomment to put qualifier/reference values below the property */
+  /* grid-row: 2; */
+}
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview-value-container,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview-value-container {
+  /* remove space that was reserved for absolutely positioned property label */
+  margin-inline-start: 0; /* was: margin-left: 12em (ltr), margin-right: 12em (rtl) */
+}
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview-value-container .wikibase-snakview-body,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview-value-container .wikibase-snakview-body {
+  /* remove space that was reserved for absolutely positioned edit buttons */
+  margin-inline-end: 0; /* was: margin-right: 18em (ltr), margin-left: 18em (rtl) */
+}
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview-property,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview-property {
+  /* don't position the property label absolutely */
+  position: static; /* was: absolute */
+
+  /* uncomment the following line to have variable width property names instead */
+  /* width: auto; */ /* was: 12em */
+}
+
+.wikibase-statementview-qualifiers .wikibase-toolbar-container,
+.wikibase-referenceview .wikibase-toolbar-container {
+  /* don't position edit buttons absolutely */
+  position: static; /* was: absolute */
+
+  /* variable width edit buttons that only take as much space as they need */
+  width: auto; /* was: 18em */
+  /* uncomment to set a minimum width for the edit buttons for less variability */
+  /* min-width: 8em; */
+
+  /* add a small amount of padding so that the text doesn't touch the side */
+  padding-inline-end: 0.5em;
+}
+
+.wikibase-statementview-qualifiers .wikibase-snaklistview .wikibase-snaklistview-listview .wikibase-snakview-property input,
+.wikibase-referenceview .wikibase-snaklistview-listview .wikibase-snakview-property input {
+  /* don't position the property input field when adding new qualifiers/references absolutely */
+  position: static; /* was: absolute */
+}
+
+
+.wikibase-entitytermsview {
+  
+display:none;
+}
+
+
+.wikibase-entityview-main h2 {
+  display:none;
+}
+
+.wikibase-statementlistview {
+  padding-left: 5px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.wikibase-statementview-references-heading{
+  display:none;
+}
+
+.wikibase-statementgroupview-property-label a {
+  color:black;
+}
+
+.wikibase-statementview-references-container {
+  display:none;
+}
+
+.wikibase-snaklistview {
+  padding-left: 20px;
+}
+
+.wikibase-snakview-value-container{
+  padding-left:17px;
+}
+
+.wikibase-statementview-qualifiers {
+  display:none;
+}
+
+
+.wikibase-toolbar-button-edit{
+  display:none;
+}
+
+.wb-sitelinks-heading{
+  display: none;
+}
+
+#resultContainer{
+  position: absolute;
+    left: 0px;
+}
+
+.wikibase-entityview-side h2{
+  display:none;
+}
+
+
+  </style>
+
+</head>
+<body>
+
+
+
+ <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-message">Loading...</div>
+  </div>
+  
+  <form id="searchForm">
+    <input type="text" id="searchInput" name="searchInput">
+    <button type="submit">Search</button>
+  </form>
+
+  <div id="resultContainer"></div>
+
+
+  <script>
+
+
+const loadingOverlay = document.getElementById('loadingOverlay');
+
+    function showLoadingOverlay() {
+      loadingOverlay.style.display = 'flex';
+    }
+
+    function hideLoadingOverlay() {
+      loadingOverlay.style.display = 'none';
+    }
+
+    hideLoadingOverlay()
+
+
+ const urlParams = new URLSearchParams(window.location.search);
+ const itemValue = urlParams.get('item');
+var searchValue = urlParams.get('searchInput');
+console.log(searchValue)
+
+
+function renderItemDetail(itemValue){
+
+  var uri = "https://www.wikidata.org/w/api.php?action=parse&formatversion=2&page="+itemValue+"&prop=text&format=json&origin=*"
+      var xhr = new XMLHttpRequest();
+
+      xhr.open('GET', uri);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = JSON.parse(xhr.response);
+          console.log(jsonResponse["parse"]["text"])
+
+        var ab = document.getElementById(itemValue)
+        const newElement = document.createElement('div');
+        newElement.id = 'details';
+        newElement.innerHTML = "Loading..."
+
+        ab.appendChild(newElement)
+        var tt = document.getElementById("details")
+        tt.innerHTML = jsonResponse["parse"]["text"]
+
+        const linkElements = tt.querySelectorAll('a');
+
+        linkElements.forEach(link => {
+          // Access the href property of each link
+          var linkUrl = link.getAttribute('href');
+          if (linkUrl.startsWith("/wiki/")){
+            linkUrl = linkUrl.replace("/wiki/", "?item=")
+            console.log(linkUrl);
+            link.setAttribute('href',linkUrl)
+          }
+          
+
+          var nya = document.getElementsByClassName("titl")
+          document.title = nya[0].innerHTML
+          ab.onclick = ""
+
+
+          // Perform any other desired operations with the link
+        });
+
+
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+      
+
+      showLoadingOverlay();
+
+
+
+
+}
+
+
+ if (itemValue !== null) {
+   console.log("The value of 'item' parameter is:", itemValue);
+
+      searchNoninput2(itemValue)
+
+ } else {
+   console.log("The 'item' parameter is not present in the URL.");
+ }
+
+ if (searchValue !== null){
+  var searchInput = searchValue
+      document.title = searchInput;
+
+      
+      // Create a new XMLHttpRequest object
+      var xhr = new XMLHttpRequest();
+      var zas = "https://m.wikidata.org/w/api.php?action=query&format=json&origin=*&formatversion=2&prop=pageprops%7Centityterms%7Cdescription&generator=wbsearch&ppprop=displaytitle&wbetterms=label&redirects=&gwbssearch="+encodeURIComponent(searchInput)+"&gwbslimit=15"
+      
+      zas = "https://www.wikidata.org/w/api.php?action=wbsearchentities&origin=*&search="+encodeURIComponent(searchInput)+"&format=json&errorformat=plaintext&language=en&limit=50&uselang=en&type=item"
+
+      // Configure the request
+      xhr.open('GET', zas);
+      showLoadingOverlay();
+
+
+      
+      // Set the response type to JSON
+      xhr.responseType = 'json';
+      
+      // Handle the response
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = xhr.response;
+          renderResult(jsonResponse);
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+ }
+
+
+
+
+function searchNoninput(searchInput){
+  // Create a new XMLHttpRequest object
+      var xhr = new XMLHttpRequest();
+      var zas = "https://m.wikidata.org/w/api.php?action=query&format=json&origin=*&formatversion=2&prop=pageprops%7Centityterms%7Cdescription&generator=wbsearch&ppprop=displaytitle&wbetterms=label&redirects=&gwbssearch="+encodeURIComponent(searchInput.id)+"&gwbslimit=15"
+      
+      zas = "https://www.wikidata.org/w/api.php?action=wbsearchentities&origin=*&search="+encodeURIComponent(searchInput)+"&format=json&errorformat=plaintext&language=en&limit=50&uselang=en&type=item"
+
+      // Configure the request
+      xhr.open('GET', zas);
+      showLoadingOverlay();
+
+
+      
+      // Set the response type to JSON
+      xhr.responseType = 'json';
+      
+      // Handle the response
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = xhr.response;
+          renderResult(jsonResponse);
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+}
+
+
+
+
+function searchNoninput2(searchInput){
+  // Create a new XMLHttpRequest object
+      var xhr = new XMLHttpRequest();
+      var zas = "https://m.wikidata.org/w/api.php?action=query&format=json&origin=*&formatversion=2&prop=pageprops%7Centityterms%7Cdescription&generator=wbsearch&ppprop=displaytitle&wbetterms=label&redirects=&gwbssearch="+encodeURIComponent(searchInput.id)+"&gwbslimit=15"
+      
+      zas = "https://www.wikidata.org/w/api.php?action=wbsearchentities&origin=*&search="+encodeURIComponent(searchInput)+"&format=json&errorformat=plaintext&language=en&limit=50&uselang=en&type=item"
+
+      // Configure the request
+      xhr.open('GET', zas);
+      showLoadingOverlay();
+
+
+      
+      // Set the response type to JSON
+      xhr.responseType = 'json';
+      
+      // Handle the response
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = xhr.response;
+          renderResult(jsonResponse);
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+
+      renderItemDetail(searchInput)
+}
+
+
+
+
+
+function extractQIDFromWikidataURL(url) {
+  // Check if the domain is wikidata.org
+  const wikiDataDomain = 'www.wikidata.org';
+  const urlObject = new URL(url);
+
+  if (urlObject.hostname !== wikiDataDomain) {
+    console.log(urlObject.hostname,wikiDataDomain)
+    // URL domain is not wikidata.org
+    return null;
+  }
+
+  // Extract the QID from the URL
+  const pathParts = urlObject.pathname.split('/');
+  const qidIndex = pathParts.indexOf('entity') + 1;
+
+  if (qidIndex >= 0 && qidIndex < pathParts.length) {
+    const qid = pathParts[qidIndex];
+    return qid;
+  }
+
+  return null;
+}
+
+
+
+
+
+
+ function getItem2(t){
+
+
+
+var xhrx = new XMLHttpRequest();
+
+      
+      zas = "https://www.wikidata.org/w/api.php?action=wbsearchentities&origin=*&search="+encodeURIComponent(t.id)+"&format=json&errorformat=plaintext&language=en&limit=50&uselang=en&type=item"
+
+      // Configure the request
+      xhrx.open('GET', zas);
+      showLoadingOverlay();
+
+
+      
+      // Set the response type to JSON
+      xhrx.responseType = 'json';
+      
+      // Handle the response
+      xhrx.onload = function() {
+        if (xhrx.status === 200) {
+          var jsonResponse = xhrx.response;
+          //console.log(jsonResponse)
+          console.log(jsonResponse["search"][0]['display']['label']['value'], jsonResponse["search"][0]['title'], jsonResponse["search"][0]['display']['description']['value'])
+          var a1 = document.getElementsByClassName("titl")
+          for (let i = 0; i < a1.length; i++) {
+              a1[i].innerHTML = jsonResponse["search"][0]['display']['label']['value']
+            }
+          a1 = document.getElementsByClassName("num")
+          for (let i = 0; i < a1.length; i++) {
+              a1[i].innerHTML = jsonResponse["search"][0]['title']
+            }
+          a1 = document.getElementsByClassName("desc")
+          for (let i = 0; i < a1.length; i++) {
+              a1[i].innerHTML = jsonResponse["search"][0]['display']['description']['value']
+            }
+
+
+
+var tt = document.getElementById("details")
+tt.innerHTML = "Now loading..."
+
+
+var sparqlQuery = `
+          SELECT ?wdLabel ?ooLabel ?o
+          WHERE {
+            VALUES (?s) { (wd:${t.id}) }
+            ?s ?wdt ?o .
+            ?wd wikibase:directClaim ?wdt .
+            ?wd rdfs:label ?wdLabel .
+            OPTIONAL {
+              ?o rdfs:label ?oLabel .
+              FILTER (lang(?oLabel) = "en")
+            }
+            FILTER (lang(?wdLabel) = "en")
+            BIND (COALESCE(?oLabel, ?o) AS ?ooLabel)
+          }
+          ORDER BY xsd:integer(STRAFTER(STR(?wd), "http://www.wikidata.org/entity/P"))`;
+
+      var abc = encodeURIComponent(sparqlQuery)
+      var uri = "https://query.wikidata.org/sparql?format=json&query=" + abc
+      var xhr = new XMLHttpRequest();
+
+      xhr.open('GET', uri);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = JSON.parse(xhr.response);
+          console.log(jsonResponse)
+
+
+            console.log(jsonResponse["results"])
+            var rr = jsonResponse["results"]["bindings"]
+            var zaString2 = "<table>"
+            for (let i = 0; i < rr.length; i++) {
+              if (rr[i]["o"]["type"] == "uri") {
+                console.log(rr[i]["wdLabel"]["value"],rr[i]["ooLabel"]["value"],rr[i]["o"]["value"])
+                console.log(rr[i]["o"]["value"],extractQIDFromWikidataURL(rr[i]["o"]["value"]))
+                if (extractQIDFromWikidataURL(rr[i]["o"]["value"])) {
+                  zaString2 = zaString2 + "<tr><td class='prop'>" + rr[i]["wdLabel"]["value"] + "</td>" + "<td class='ilink' id="+extractQIDFromWikidataURL(rr[i]["o"]["value"])+" onclick='getItem2(this)'>" + rr[i]["ooLabel"]["value"] + "</td></tr>"
+                }
+                else{
+                zaString2 = zaString2 + "<tr><td class='prop'>" + rr[i]["wdLabel"]["value"] + "</td>" + "<td><a href='" + rr[i]["o"]["value"] + "'>" + rr[i]["ooLabel"]["value"] + "</a></td></tr>"
+                }
+              }
+              else {
+                console.log(rr[i]["wdLabel"]["value"],rr[i]["ooLabel"]["value"])
+                zaString2 = zaString2 + "<tr><td class='prop'>" + rr[i]["wdLabel"]["value"] + "</td><td>" +  rr[i]["ooLabel"]["value"] + "</tr>"
+              }
+              
+            }
+            zaString2 = zaString2 + "</table>"
+
+            
+            tt.innerHTML = zaString2
+
+
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+      showLoadingOverlay();
+
+
+
+
+          
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhrx.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhrx.send();
+
+
+
+
+
+
+  
+      
+
+    }
+
+
+    function getItem(t){
+      window.location.href = "?item=" + t.id;
+
+
+
+
+    }
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+      
+      var searchInput = document.getElementById('searchInput').value;
+      document.title = searchInput;
+
+      
+      // Create a new XMLHttpRequest object
+      var xhr = new XMLHttpRequest();
+      var zas = "https://m.wikidata.org/w/api.php?action=query&format=json&origin=*&formatversion=2&prop=pageprops%7Centityterms%7Cdescription&generator=wbsearch&ppprop=displaytitle&wbetterms=label&redirects=&gwbssearch="+encodeURIComponent(searchInput)+"&gwbslimit=15"
+      
+      zas = "https://www.wikidata.org/w/api.php?action=wbsearchentities&origin=*&search="+encodeURIComponent(searchInput)+"&format=json&errorformat=plaintext&language=en&limit=50&uselang=en&type=item"
+
+      // Configure the request
+      xhr.open('GET', zas);
+      showLoadingOverlay();
+
+
+      
+      // Set the response type to JSON
+      xhr.responseType = 'json';
+      
+      // Handle the response
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var jsonResponse = xhr.response;
+          renderResult(jsonResponse);
+          hideLoadingOverlay();
+        } else {
+          console.log('Error: ' + xhr.status);
+          hideLoadingOverlay();
+        }
+      };
+      
+      // Send the request
+      xhr.send();
+    });
+
+
+
+
+
+
+
+
+
+
+
+    function renderResult(jsonResponse) {
+      console.log(jsonResponse)
+      var resultContainer = document.getElementById('resultContainer');
+      //resultContainer.innerHTML = JSON.stringify(jsonResponse, null, 2);
+      var zaString =""
+
+
+      var rr = jsonResponse["search"]
+      for (let i = 0; i < rr.length; i++) {
+        zaString = zaString + "<div class='i' onclick='getItem(this)' id='"+rr[i]['title'] +"''>"
+        zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
+        try {
+              zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
+        } catch (error) {
+
+        }
+        zaString = zaString + "</div>"
+
+
+      }
+      resultContainer.innerHTML = zaString
+
+    }
+
+
+
+  </script>
+</body>
+</html>
+
+
