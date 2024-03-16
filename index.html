@@ -513,7 +513,7 @@ function searchNoninput2(searchInput){
           var rr = jsonResponse["search"]
           for (let i = 0; i < rr.length; i++) {
             zaString = zaString + "<div class='i'  id='"+rr[i]['title'] +"''>"
-            zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
+            zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <a class='num' href='https://wikidata.org/wiki/"+rr[i]['title']+"'>"+ rr[i]['title'] +  "</a></h1>"
             try {
                   zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
             } catch (error) {
