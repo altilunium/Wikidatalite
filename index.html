@@ -298,11 +298,16 @@ a {
 }
 
 
+
   </style>
 
 </head>
 <body>
 
+
+<div id="customContextMenu" style="display: none; position: absolute; background: white; border: 1px solid gray; padding: 0px 18px; cursor:pointer">
+  <p id="menuItem1">Add to inventory</p>
+</div>
 
 
  <div class="loading-overlay" id="loadingOverlay">
@@ -376,6 +381,16 @@ function renderItemDetail(itemValue){
 
           var nya = document.getElementsByClassName("titl")
           document.title = nya[0].innerHTML
+
+          if(itemValue.indexOf("Property:") !== -1){
+            var aa = document.getElementsByClassName("wikibase-labelview-text")
+            var desc = document.getElementsByClassName("wikibase-entitytermsview-heading-description")
+            console.log(aa[0].innerHTML)
+            console.log(desc[0].innerHTML)
+            document.getElementById('prop_title').innerHTML = aa[0].innerHTML
+            document.getElementById('prop_desc').innerHTML = desc[0].innerHTML
+
+          }
          
 
 
@@ -486,6 +501,24 @@ function searchNoninput(searchInput){
 
 
 function searchNoninput2(searchInput){
+
+
+  if(searchInput.indexOf("Property:") !== -1){
+    var resultContainer = document.getElementById('resultContainer');
+    var zaString =""
+    zaString = zaString + "<div class='i'  id='"+searchInput +"''>"
+    zaString = zaString +  "<h1>🔰  <span class='titl' id='prop_title'>" + searchInput + "</span> <a class='num' href='https://wikidata.org/wiki/"+searchInput+"'>"+ searchInput +  "</a></h1>"
+    try {
+          zaString = zaString +"<span class='desc' id='prop_desc'>" + "property" + "</span><br>"
+    } catch (error) { }
+    zaString = zaString + "<div id='details'>Now loading...</div></div>"
+    resultContainer.innerHTML = zaString
+    renderItemDetail(searchInput)
+    return
+
+}
+
+
   // Create a new XMLHttpRequest object
       var xhr = new XMLHttpRequest();
       var zas = "https://m.wikidata.org/w/api.php?action=query&format=json&origin=*&formatversion=2&prop=pageprops%7Centityterms%7Cdescription&generator=wbsearch&ppprop=displaytitle&wbetterms=label&redirects=&gwbssearch="+encodeURIComponent(searchInput.id)+"&gwbslimit=15"
@@ -513,16 +546,27 @@ function searchNoninput2(searchInput){
           var rr = jsonResponse["search"]
           for (let i = 0; i < rr.length; i++) {
             zaString = zaString + "<div class='i'  id='"+rr[i]['title'] +"''>"
-            zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <a class='num' href='https://wikidata.org/wiki/"+rr[i]['title']+"'>"+ rr[i]['title'] +  "</a></h1>"
+
+            try{
+              zaString = zaString +  "<h1>📄  <span class='titl' >" + rr[i]['display']['label']['value'] + "</span> <a class='num' href='https://wikidata.org/wiki/"+rr[i]['title']+"'>"+ rr[i]['title'] +  "</a></h1>"
+            }
+            catch (error){
+              zaString = zaString +  "<h1>📄  <span class='titl' >" + null + "</span> <a class='num' href='https://wikidata.org/wiki/"+rr[i]['title']+"'>"+ rr[i]['title'] +  "</a></h1>"
+            }
+            
+
+
+
             try {
-                  zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
+                  zaString = zaString +"<span class='desc' >" + rr[i]['display']['description']['value'] + "</span><br>"
             } catch (error) {
 
             }
             zaString = zaString + "<div id='details'>Now loading...</div></div>"
-
-
           }
+
+
+
           resultContainer.innerHTML = zaString
           renderItemDetail(searchInput)
 
@@ -793,8 +837,8 @@ var sparqlQuery = `
 
       var rr = jsonResponse["search"]
       for (let i = 0; i < rr.length; i++) {
-        zaString = zaString + "<div class='i' onclick='getItem(this)' id='"+rr[i]['title'] +"''>"
-        zaString = zaString +  "<h1>📄  <span class='titl'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
+        zaString = zaString + "<div class='i'  onclick='getItem(this)' id='"+rr[i]['title'] +"''>"
+        zaString = zaString +  "<h1>📄  <span class='titl' href='"+rr[i]['title']+"'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
         try {
               zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
         } catch (error) {
@@ -809,6 +853,44 @@ var sparqlQuery = `
     }
 
 
+
+
+
+
+/*
+// Right click context menu
+
+document.addEventListener('contextmenu', function(event) {
+  event.preventDefault(); // Disable the default context menu
+
+  const customContextMenu = document.getElementById('customContextMenu');
+  const menuItem1 = document.getElementById('menuItem1');
+  const menuItem2 = document.getElementById('menuItem2');
+
+  // Position the custom context menu near the cursor
+  customContextMenu.style.left = event.pageX + 'px';
+  customContextMenu.style.top = event.pageY + 'px';
+  customContextMenu.style.display = 'block';
+
+  var targetElement = event.target;
+
+  // Add event listeners for custom context menu items
+  menuItem1.addEventListener('click', function() {
+    console.log('Menu Item 1 clicked!');
+    customContextMenu.style.display = 'none';
+    console.log(targetElement.getAttribute('href'),targetElement.innerHTML)
+  });
+
+
+});
+
+// Hide the custom context menu when clicking outside of it
+document.addEventListener('click', function() {
+  const customContextMenu = document.getElementById('customContextMenu');
+  customContextMenu.style.display = 'none';
+});
+
+*/
 
   </script>
 </body>
