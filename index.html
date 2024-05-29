@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
   <meta charset="UTF-8">
   <link rel="icon" href="https://www.wikidata.org/static/favicon/wikidata.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -298,6 +297,17 @@ a {
 }
 
 
+.titl:hover {
+  cursor:pointer;
+}
+
+.mw-kartographer-map img{
+  display:none;
+}
+
+.wikibase-kartographer-caption {
+  margin-top:-15px;
+}
 
   </style>
 
@@ -310,7 +320,7 @@ a {
 </div>
 
 
- <div class="loading-overlay" id="loadingOverlay">
+ <div class="loading-overlay" id="loadingOverlay" style="display: none;">
     <div class="loading-message">Loading...</div>
   </div>
   
@@ -837,8 +847,8 @@ var sparqlQuery = `
 
       var rr = jsonResponse["search"]
       for (let i = 0; i < rr.length; i++) {
-        zaString = zaString + "<div class='i'  onclick='getItem(this)' id='"+rr[i]['title'] +"''>"
-        zaString = zaString +  "<h1>📄  <span class='titl' href='"+rr[i]['title']+"'>" + rr[i]['display']['label']['value'] + "</span> <span class='num'>"+ rr[i]['title'] +  "</span></h1>"
+        zaString = zaString + "<div class='i'>"
+        zaString = zaString +  "<h1>📄  <span class='titl' onclick='getItem(this)' id='"+rr[i]['title']+"'>" + rr[i]['display']['label']['value'] + "</span> <a class='num' href='https://wikidata.org/wiki/"+ rr[i]['title']+"'>" +rr[i]['title'] + "</a></h1>"
         try {
               zaString = zaString +"<span class='desc'>" + rr[i]['display']['description']['value'] + "</span><br>"
         } catch (error) {
@@ -893,7 +903,8 @@ document.addEventListener('click', function() {
 */
 
   </script>
-</body>
-</html>
 
 
+
+
+</body></html>
